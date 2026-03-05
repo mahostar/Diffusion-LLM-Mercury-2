@@ -1,137 +1,197 @@
 # Diffution LLM Chat - Desktop App
 
-A React-based chat application for generating HTML files using the Inception Labs API. Available as both a web app and desktop application.
+A cross-platform LLM chat application with real-time synchronization and desktop installer capabilities.
 
-## Features
+## 🚀 Features
 
-- 💬 **Chat Interface**: Interactive chat with AI that generates HTML files
-- 🎨 **HTML Preview**: Live preview of generated HTML in a split-pane view
-- 💾 **Conversation Management**: Save and manage multiple conversations
-- ⚙️ **Customizable Settings**: 
-  - Custom API key management
-  - Customizable system prompt
-- 🗄️ **Persistent Database**: SQLite database using IndexedDB (web) or file-based (desktop)
-- 🖥️ **Desktop App**: Native desktop application for Windows, macOS, and Linux
+- **Cross-platform chat application** - Works in browsers and as a desktop app
+- **Real-time synchronization** - Changes sync across multiple windows and browsers
+- **Embedded backend server** - No external server required for desktop version
+- **Desktop installer** - Windows installer with embedded Electron app
+- **Persistent storage** - Data saved automatically
+- **HTML generation** - AI can generate complete HTML files
+- **Multi-window support** - Open multiple app instances with sync
 
-## Installation
+## 📦 Installation
+
+### Desktop Application (Recommended)
+
+1. Download the latest installer from [Releases](https://github.com/mahostar/Diffusion-LLM-Mercury-2/releases)
+2. Run `Diffusion LLM Chat Setup 1.0.0.exe`
+3. Launch from Start Menu
+
+### Web Version
+
+1. Clone the repository
+2. Run `npm install`
+3. Run `npm run dev:full` (starts both backend and frontend)
+4. Open http://localhost:5173
+
+## 🛠️ Development
 
 ### Prerequisites
 
-- Node.js 18+ and npm
+- Node.js (v18 or higher)
+- npm or yarn
 
-### Install Dependencies
+### Setup
 
 ```bash
+# Clone the repository
+git clone https://github.com/mahostar/Diffusion-LLM-Mercury-2.git
+cd Diffusion-LLM-Mercury-2
+
+# Install dependencies
 npm install
-```
 
-## Development
+# Development mode (web + backend)
+npm run dev:full
 
-### Web Development
-
-Run the development server:
-
-```bash
-npm run dev
-```
-
-The app will be available at `http://localhost:5173`
-
-### Desktop Development
-
-Run the app in Electron development mode:
-
-```bash
+# Development mode (Electron)
 npm run electron:dev
 ```
 
-This will:
-1. Start the Vite dev server
-2. Launch Electron and connect to the dev server
-
-## Building for Production
-
-### Build Web App
+### Building
 
 ```bash
+# Build for web
 npm run build
-```
 
-The built files will be in the `dist` directory.
-
-### Build Desktop App
-
-Build the desktop application:
-
-```bash
+# Build desktop application
 npm run electron:build
-```
 
-This will:
-1. Build the React app
-2. Package it with Electron
-3. Create installers in the `release` directory
-
-#### Build Options
-
-- **Windows**: Creates an NSIS installer (.exe)
-- **macOS**: Creates a DMG file
-- **Linux**: Creates AppImage and .deb packages
-
-### Pack Without Installer
-
-To create a portable version without an installer:
-
-```bash
+# Package without installer
 npm run electron:pack
 ```
 
-## Configuration
+## 🏗️ Architecture
 
-### API Key
+### Web Version
+- **Frontend**: React + Vite
+- **Backend**: Express.js + SQLite
+- **Real-time**: WebSocket server
+- **Database**: SQLite with REST API
 
-1. Click the gear icon (⚙️) in the top-right corner
-2. Enter your Inception Labs API key
-3. Click "Save"
+### Desktop Version
+- **Frontend**: React + Vite (embedded)
+- **Backend**: Express.js (embedded in Electron)
+- **Real-time**: WebSocket server (embedded)
+- **Storage**: JSON file in AppData
+- **Runtime**: Electron with Node.js
 
-### System Prompt
-
-You can customize the system prompt in Settings to change how the AI behaves.
-
-## Database
-
-The app uses SQLite for storing conversations and messages:
-
-- **Web**: Uses IndexedDB (browser-specific)
-- **Desktop**: Uses file-based SQLite (shared across all browsers on the same machine)
-
-Database location for desktop app:
-- **Windows**: `%APPDATA%/Diffution-LLM-Chat/database.sqlite`
-- **macOS**: `~/Library/Application Support/Diffution-LLM-Chat/database.sqlite`
-- **Linux**: `~/.config/Diffution-LLM-Chat/database.sqlite`
-
-## Project Structure
+## 📁 Project Structure
 
 ```
-├── electron/          # Electron main process files
-│   ├── main.cjs       # Main Electron process
-│   └── preload.cjs    # Preload script
-├── src/
-│   ├── components/    # React components
-│   ├── services/      # API and database services
-│   └── utils/         # Utility functions
-├── public/            # Static assets
-└── dist/              # Built files (after npm run build)
+Diffusion-LLM-Mercury-2/
+├── src/                    # React frontend source
+│   ├── components/         # React components
+│   ├── services/          # API and database services
+│   └── utils/             # Utility functions
+├── electron/               # Electron main process
+│   ├── main.js            # Electron main entry point
+│   ├── backend-server*.js # Embedded backend servers
+│   └── preload.js         # Preload script
+├── public/                 # Static assets
+├── server.js              # Standalone backend server
+├── release/               # Built desktop application
+└── dist/                  # Built web application
 ```
 
-## Technologies Used
+## 🔧 Configuration
 
-- **React 19** - UI framework
-- **Vite** - Build tool and dev server
-- **Electron** - Desktop app framework
-- **sql.js** - SQLite in the browser
-- **IndexedDB** - Browser database storage
+### API Keys
 
-## License
+The app uses OpenAI's API by default. Set your API key in the settings or use environment variable:
 
-Private project
+```bash
+export OPENAI_API_KEY=your_api_key_here
+```
+
+### Database
+
+- **Web version**: SQLite database (`server-database.sqlite`)
+- **Desktop version**: JSON file (`%APPDATA%/Diffusion-LLM-Chat/app-data.json`)
+
+## 🌐 API Endpoints
+
+### Conversations
+- `GET /api/conversations` - List all conversations
+- `POST /api/conversations` - Create new conversation
+- `PUT /api/conversations/:id` - Update conversation
+- `DELETE /api/conversations/:id` - Delete conversation
+
+### Messages
+- `GET /api/conversations/:id/messages` - Get conversation messages
+- `POST /api/conversations/:id/messages` - Add new message
+
+### WebSocket Events
+- `conversation_created` - New conversation created
+- `conversation_updated` - Conversation updated
+- `conversation_deleted` - Conversation deleted
+- `message_created` - New message added
+
+## 🔄 Real-time Synchronization
+
+### Web Version
+- Multiple browser tabs sync via localStorage events
+- Multiple browser windows sync via backend WebSocket
+
+### Desktop Version
+- Multiple app windows sync via embedded WebSocket server
+- Data persists to local JSON file
+
+## 🎯 Usage
+
+1. **Create conversations** - Click the "+" button in the sidebar
+2. **Chat with AI** - Type messages and get AI responses
+3. **Generate HTML** - Ask the AI to create complete HTML files
+4. **Preview HTML** - View generated HTML in the preview panel
+5. **Multi-window sync** - Open multiple windows to see real-time sync
+
+## 🔒 Security
+
+- **Desktop version**: All data stays local, no external connections
+- **Web version**: Backend server runs locally, data doesn't leave your computer
+- **API keys**: Stored locally, never sent to external servers
+
+## 📱 System Requirements
+
+### Desktop Application
+- Windows 10 or later (x64 or x86)
+- 4GB RAM minimum
+- 200MB free disk space
+
+### Web Version
+- Modern web browser (Chrome, Firefox, Edge, Safari)
+- Node.js for development server
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🙏 Acknowledgments
+
+- OpenAI for the API
+- Electron for desktop app framework
+- React for the frontend framework
+- Express.js for the backend server
+
+## 📞 Support
+
+If you encounter any issues:
+
+1. Check the [Issues](https://github.com/mahostar/Diffusion-LLM-Mercury-2/issues) page
+2. Create a new issue with detailed information
+3. Include your OS, browser, and steps to reproduce
+
+---
+
+**Enjoy your cross-platform LLM chat experience!** 🎉
