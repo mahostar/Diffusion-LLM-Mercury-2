@@ -11,7 +11,7 @@ const isElectron = typeof window !== 'undefined' && window.electronAPI;
 // Configuration based on environment
 const config = {
   apiBaseUrl: isElectron ? 'http://127.0.0.1:3001/api' : 'http://localhost:3001/api',
-  wsUrl: isElectron ? 'ws://127.0.0.1:8081' : 'ws://localhost:8081'
+  wsUrl: isElectron ? 'ws://127.0.0.1:8082' : 'ws://localhost:8082'
 };
 
 // WebSocket connection for real-time updates

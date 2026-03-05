@@ -1,9 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { validateAndFixHTML } from '../utils/htmlUtils';
 import './HTMLPreview.css';
 
 function HTMLPreview({ htmlContent }) {
   const iframeRef = useRef(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleRefresh = () => {
+    setRefreshKey(prev => prev + 1);
+  };
 
   useEffect(() => {
     if (iframeRef.current && htmlContent) {
@@ -25,15 +30,26 @@ function HTMLPreview({ htmlContent }) {
         console.error('Error rendering HTML:', error);
       }
     }
-  }, [htmlContent]);
+  }, [htmlContent, refreshKey]);
 
   return (
     <div className="html-preview">
       <div className="preview-header">
         <h3>HTML Preview</h3>
-        {htmlContent && (
-          <span className="preview-status">Live Preview</span>
-        )}
+        <div className="preview-header-actions">
+          {htmlContent && (
+            <button 
+              className="refresh-button"
+              onClick={handleRefresh}
+              title="Refresh preview"
+            >
+              Refresh
+            </button>
+          )}
+          {htmlContent && (
+            <span className="preview-status">Live Preview</span>
+          )}
+        </div>
       </div>
       <div className="preview-content">
         {htmlContent ? (

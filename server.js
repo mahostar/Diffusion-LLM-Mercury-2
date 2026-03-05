@@ -13,7 +13,7 @@ import fs from 'fs';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const WS_PORT = process.env.WS_PORT || 8081; // Changed from 8080 to avoid conflicts
+const WS_PORT = process.env.WS_PORT || 8082; // Changed from 8081 to avoid conflicts
 
 // Middleware
 app.use(cors());

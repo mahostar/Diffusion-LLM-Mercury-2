@@ -30,9 +30,9 @@ function Sidebar({ isOpen, currentConversationId, onSelectConversation, onNewCon
 
   const handleNewConversation = async () => {
     try {
-      const id = await createConversation();
+      const conversation = await createConversation();
       await loadConversations();
-      onNewConversation(id);
+      onNewConversation(conversation.id);
     } catch (error) {
       console.error('Error creating conversation:', error);
     }

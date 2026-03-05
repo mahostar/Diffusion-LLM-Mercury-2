@@ -52,6 +52,12 @@ function ChatMessage({ message, onExtractHTML }) {
       console.error('Failed to copy:', err);
     }
   };
+
+  const handleRun = (html) => {
+    if (onExtractHTML) {
+      onExtractHTML(html);
+    }
+  };
   
   const handleExtractHTML = (html) => {
     if (onExtractHTML) {
@@ -71,19 +77,28 @@ function ChatMessage({ message, onExtractHTML }) {
           <div key={index} className="code-block-container">
             <div className="code-block-header">
               <span className="code-block-title">HTML Block {index + 1}</span>
-              <button
-                className="copy-button"
-                onClick={() => {
-                  handleCopy(html, index);
-                  // Extract the last HTML block to preview
-                  if (index === htmlBlocks.length - 1) {
-                    handleExtractHTML(html);
-                  }
-                }}
-                title="Copy code"
-              >
-                {copiedIndex === index ? '✓ Copied' : 'Copy'}
-              </button>
+              <div className="code-block-actions">
+                <button
+                  className="run-button"
+                  onClick={() => handleRun(html)}
+                  title="Run in preview"
+                >
+                  Run
+                </button>
+                <button
+                  className="copy-button"
+                  onClick={() => {
+                    handleCopy(html, index);
+                    // Extract the last HTML block to preview
+                    if (index === htmlBlocks.length - 1) {
+                      handleExtractHTML(html);
+                    }
+                  }}
+                  title="Copy code"
+                >
+                  {copiedIndex === index ? 'Copied' : 'Copy'}
+                </button>
+              </div>
             </div>
             <pre className="code-block">
               <code>{html}</code>
@@ -112,16 +127,25 @@ function ChatMessage({ message, onExtractHTML }) {
         <div className="code-block-container">
           <div className="code-block-header">
             <span className="code-block-title">Code</span>
-            <button
-              className="copy-button"
-              onClick={() => {
-                handleCopy(message.content, 'single');
-                handleExtractHTML(message.content);
-              }}
-              title="Copy code"
-            >
-              {copiedIndex === 'single' ? '✓ Copied' : 'Copy'}
-            </button>
+            <div className="code-block-actions">
+              <button
+                className="run-button"
+                onClick={() => handleRun(message.content)}
+                title="Run in preview"
+              >
+                Run
+              </button>
+              <button
+                className="copy-button"
+                onClick={() => {
+                  handleCopy(message.content, 'single');
+                  handleExtractHTML(message.content);
+                }}
+                title="Copy code"
+              >
+                {copiedIndex === 'single' ? 'Copied' : 'Copy'}
+              </button>
+            </div>
           </div>
           <pre className="code-block">
             <code>{message.content}</code>
